@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 from .database import engine, Base
 from .routers import auth_router, lotes_router, gastos_router, ingresos_router, rentabilidad_router
 
-# Crear tablas automáticamente al iniciar (en producción usar Alembic)
+# Crear tablas automáticamente al iniciar
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -13,9 +14,16 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# CORS: leer dominios desde variable de entorno para producción
+origins_env = os.getenv("ALLOWED_ORIGINS", "")
+origins = [o.strip() for o in origins_env.split(",") if o.strip()] if origins_env else []
+
+# Siempre incluir localhost para desarrollo
+origins += ["http://localhost:3000", "http://localhost:5173"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],  # React dev
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
