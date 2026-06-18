@@ -1,11 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import os
 
 from .database import engine, Base
 from .routers import auth_router, lotes_router, gastos_router, ingresos_router, rentabilidad_router
 
-# Crear tablas automáticamente al iniciar
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -14,11 +14,8 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS: leer dominios desde variable de entorno para producción
 origins_env = os.getenv("ALLOWED_ORIGINS", "")
 origins = [o.strip() for o in origins_env.split(",") if o.strip()] if origins_env else []
-
-# Siempre incluir localhost para desarrollo
 origins += ["http://localhost:3000", "http://localhost:5173"]
 
 app.add_middleware(
@@ -28,6 +25,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Handler explícito para preflight OPTIONS
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(request: Request, rest_of_path: str):
+    origin = request.headers.get("origin", "")
+    return JSONResponse(
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Authorization, Content-Type",
+            "Access-Control-Allow-Credentials": "true",
+        },
+    )
 
 app.include_router(auth_router)
 app.include_router(lotes_router)
