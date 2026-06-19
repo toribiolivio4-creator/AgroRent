@@ -10,7 +10,13 @@
     {
       "src": "/(.*)",
       "dest": "/api/index.py",
-      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "https://agro-rent-u2up.vercel.app",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept",
+        "Access-Control-Allow-Credentials": "true"
+      }
     }
   ]
 }
