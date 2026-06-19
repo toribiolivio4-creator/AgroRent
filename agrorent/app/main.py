@@ -1,6 +1,5 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 import os
 
 from .database import engine, Base
@@ -14,25 +13,11 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Handler OPTIONS debe ir ANTES del middleware CORS
-@app.options("/{rest_of_path:path}")
-async def preflight_handler(request: Request, rest_of_path: str):
-    origin = request.headers.get("origin", "*")
-    return JSONResponse(
-        content="OK",
-        headers={
-            "Access-Control-Allow-Origin": origin,
-            "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept",
-            "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Max-Age": "86400",
-        },
-    )
-
 origins_env = os.getenv("ALLOWED_ORIGINS", "")
 origins = [o.strip() for o in origins_env.split(",") if o.strip()] if origins_env else []
 origins += ["http://localhost:3000", "http://localhost:5173"]
 
+# CORS middleware debe ir primero — maneja OPTIONS automáticamente
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
