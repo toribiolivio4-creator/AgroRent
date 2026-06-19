@@ -55,7 +55,7 @@ export const Sidebar: React.FC = () => {
               padding: '9px 12px', borderRadius: 'var(--radius-md)',
               fontSize: 13.5, fontWeight: isActive ? 600 : 400,
               color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
-              background: isActive ? 'var(--green-50)' : 'transparent',
+              background: isActive ? 'var(--nav-active-bg)' : 'transparent',
               marginBottom: 2, transition: 'all .12s', textDecoration: 'none',
             })}
           >
