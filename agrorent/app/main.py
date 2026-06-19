@@ -14,6 +14,21 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# Handler OPTIONS debe ir ANTES del middleware CORS
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(request: Request, rest_of_path: str):
+    origin = request.headers.get("origin", "*")
+    return JSONResponse(
+        content="OK",
+        headers={
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Max-Age": "86400",
+        },
+    )
+
 origins_env = os.getenv("ALLOWED_ORIGINS", "")
 origins = [o.strip() for o in origins_env.split(",") if o.strip()] if origins_env else []
 origins += ["http://localhost:3000", "http://localhost:5173"]
@@ -25,20 +40,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Handler explícito para preflight OPTIONS
-@app.options("/{rest_of_path:path}")
-async def preflight_handler(request: Request, rest_of_path: str):
-    origin = request.headers.get("origin", "")
-    return JSONResponse(
-        content={},
-        headers={
-            "Access-Control-Allow-Origin": origin,
-            "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "Authorization, Content-Type",
-            "Access-Control-Allow-Credentials": "true",
-        },
-    )
 
 app.include_router(auth_router)
 app.include_router(lotes_router)
