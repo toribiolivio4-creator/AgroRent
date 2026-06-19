@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../store/auth'
 import { Button } from '../components/ui/Button'
+import { ThemeToggle } from '../components/ui/ThemeToggle'
 
 export const RegistroPage: React.FC = () => {
   const [nombre, setNombre] = useState('')
@@ -28,7 +29,11 @@ export const RegistroPage: React.FC = () => {
     <div style={{
       minHeight: '100vh', background: 'var(--bg)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
+      position: 'relative',
     }}>
+      <div style={{ position: 'absolute', top: 14, right: 18, zIndex: 50 }}>
+        <ThemeToggle />
+      </div>
       <div style={{ width: '100%', maxWidth: 420 }}>
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 36, color: 'var(--accent)', fontStyle: 'italic' }}>
