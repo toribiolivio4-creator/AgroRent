@@ -7,6 +7,7 @@ export const RegistroPage: React.FC = () => {
   const [nombre, setNombre] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const { registro, login, loading } = useAuthStore()
   const navigate = useNavigate()
@@ -52,13 +53,34 @@ export const RegistroPage: React.FC = () => {
             {[
               { label: 'Nombre completo', value: nombre, setter: setNombre, type: 'text', placeholder: 'Juan Pérez' },
               { label: 'Email', value: email, setter: setEmail, type: 'email', placeholder: 'juan@ejemplo.com' },
-              { label: 'Contraseña', value: password, setter: setPassword, type: 'password', placeholder: '••••••••' },
             ].map(({ label, value, setter, type, placeholder }) => (
               <div key={label} style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 13, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{label}</label>
                 <input type={type} required value={value} onChange={(e) => setter(e.target.value)} placeholder={placeholder} />
               </div>
             ))}
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>Contraseña</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'} required
+                  value={password} onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  style={{ paddingRight: 40 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                    background: 'none', border: 'none', cursor: 'pointer', padding: 4,
+                    color: 'var(--text-muted)', display: 'flex',
+                  }}
+                >
+                  <i className={`ti ti-${showPassword ? 'eye-off' : 'eye'}`} style={{ fontSize: 18 }} />
+                </button>
+              </div>
+            </div>
             <div style={{ marginBottom: 24 }} />
             <Button type="submit" loading={loading} style={{ width: '100%', justifyContent: 'center' }}>
               Crear cuenta gratis

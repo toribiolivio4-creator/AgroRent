@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button'
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const { login, loading } = useAuthStore()
   const navigate = useNavigate()
@@ -69,11 +70,25 @@ export const LoginPage: React.FC = () => {
               <label style={{ fontSize: 13, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>
                 Contraseña
               </label>
-              <input
-                type="password" required
-                value={password} onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'} required
+                  value={password} onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  style={{ paddingRight: 40 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                    background: 'none', border: 'none', cursor: 'pointer', padding: 4,
+                    color: 'var(--text-muted)', display: 'flex',
+                  }}
+                >
+                  <i className={`ti ti-${showPassword ? 'eye-off' : 'eye'}`} style={{ fontSize: 18 }} />
+                </button>
+              </div>
             </div>
             <Button type="submit" loading={loading} style={{ width: '100%', justifyContent: 'center' }}>
               Ingresar
